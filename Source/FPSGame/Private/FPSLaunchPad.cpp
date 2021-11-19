@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/DecalComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "FPSLaunchPad.h"
 
 // Sets default values
@@ -22,20 +24,21 @@ AFPSLaunchPad::AFPSLaunchPad()
 	// Overlap event binding
 	MeshComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSLaunchPad::HandleOverlap);
 
-	// Adding a decal (for some reason not working properly?)
+	// Adding a decal
 	ArrowDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComp"));
 	ArrowDecal->SetupAttachment(RootComponent);
 }
 
-// Launch character or actor on overlap
+// Launch character or actor on overlap + particle effect
 void AFPSLaunchPad::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Try to launch character
+	// Try to launch character if cast succeeds
 	ACharacter* MyPawn = Cast<ACharacter>(OtherActor);
 	if (MyPawn)
 	{
 		MyPawn->LaunchCharacter((GetActorForwardVector()+GetActorUpVector()) * Power,true,true);
+		UGameplayStatics::SpawnEmitterAtLocation(this, LaunchFX, GetActorLocation());
 	}
 	else 
 	{
@@ -45,6 +48,7 @@ void AFPSLaunchPad::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		{
 			float CubeMass = CubeComp->GetMass();
 			CubeComp->AddImpulse((GetActorForwardVector() + GetActorUpVector()) * Power*CubeMass);
+			UGameplayStatics::SpawnEmitterAtLocation(this, LaunchFX, GetActorLocation());
 		}
 	}
 

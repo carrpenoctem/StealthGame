@@ -16,11 +16,6 @@ public:
 	AFPSLaunchPad();
 
 protected:
-	
-	/* probably not gonna need
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	*/
 
 	// launch pad scene root
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -30,20 +25,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* MeshComp;
 
+	// Additional decal
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UDecalComponent* ArrowDecal;
 
+	// Base launch power
 	UPROPERTY(EditAnywhere, Category = "Gameplay")
 	float Power = 1000;
 
+	// Particle to trigger on launch
+	UPROPERTY(EditDefaultsOnly, Category = "FX");
+	UParticleSystem* LaunchFX;
+
+	// Overlap check
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-public:	
-	/* probably not gonna need
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	*/
 
 };
