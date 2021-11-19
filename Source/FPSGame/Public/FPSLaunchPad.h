@@ -33,6 +33,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gameplay")
 	float Power = 1000;
 
+	// Base launch angle
+	UPROPERTY(EditAnywhere, Category = "Gameplay")
+	float Angle = 45;
+
 	// Particle to trigger on launch
 	UPROPERTY(EditDefaultsOnly, Category = "FX");
 	UParticleSystem* LaunchFX;

@@ -33,11 +33,21 @@ AFPSLaunchPad::AFPSLaunchPad()
 void AFPSLaunchPad::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Getting custom angle for launching
+	FRotator LaunchDir = GetActorRotation();
+	LaunchDir.Pitch += Angle;
+	FVector LaunchVelocity = LaunchDir.Vector() * Power;
+
 	// Try to launch character if cast succeeds
 	ACharacter* MyPawn = Cast<ACharacter>(OtherActor);
 	if (MyPawn)
 	{
+		/*
+		Old launch with fixed angle
 		MyPawn->LaunchCharacter((GetActorForwardVector()+GetActorUpVector()) * Power,true,true);
+		*/
+
+		MyPawn->LaunchCharacter(LaunchVelocity, true, true);
 		UGameplayStatics::SpawnEmitterAtLocation(this, LaunchFX, GetActorLocation());
 	}
 	else 
@@ -47,7 +57,7 @@ void AFPSLaunchPad::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		if (CubeComp)
 		{
 			float CubeMass = CubeComp->GetMass();
-			CubeComp->AddImpulse((GetActorForwardVector() + GetActorUpVector()) * Power*CubeMass);
+			CubeComp->AddImpulse(LaunchVelocity*CubeMass);
 			UGameplayStatics::SpawnEmitterAtLocation(this, LaunchFX, GetActorLocation());
 		}
 	}
