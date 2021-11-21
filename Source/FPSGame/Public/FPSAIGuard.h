@@ -33,6 +33,16 @@ protected:
 	UFUNCTION()
 	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
 
+	// So the guard can return after being distracted
+	FRotator InitialRotation;
+
+	// Resetting rotation
+	UFUNCTION()
+	void ResetOrientation();
+
+	// Reset rotation timer handle
+	FTimerHandle TimerHandle_ResetOrientation;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -22,6 +22,8 @@ AFPSAIGuard::AFPSAIGuard()
 void AFPSAIGuard::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitialRotation = GetActorRotation();
 	
 }
 
@@ -39,6 +41,26 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
 	DrawDebugLine(GetWorld(), GetActorLocation(), Location, FColor::Green, false, 2, NULL, 5);
+
+	// Using this instead FindLookAtRotation to avoid adding libraries
+	FVector Direction = Location - GetActorLocation();
+	Direction.Normalize();
+
+	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
+	NewLookAt.Pitch = 0;
+	NewLookAt.Roll = 0;
+	
+	SetActorRotation(NewLookAt);
+
+	// Return to initial rotation after a while
+	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
+	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
+}
+
+// Reset Rotation
+void AFPSAIGuard::ResetOrientation()
+{
+	SetActorRotation(InitialRotation);
 }
 
 // Called every frame
