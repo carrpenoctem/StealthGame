@@ -17,12 +17,12 @@ AFPSGameMode::AFPSGameMode()
 }
 
 // Input disable and camera effect on succeed
-void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
+void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 {
 	if (InstigatorPawn) 
 	{
 		InstigatorPawn->DisableInput(nullptr);
-		OnMissionCompleted(InstigatorPawn);
+		OnMissionCompleted(InstigatorPawn, bMissionSuccess);
 
 		APlayerController* playerController = Cast<APlayerController>(InstigatorPawn->GetController());
 		if (playerController) 

@@ -2,6 +2,7 @@
 
 #include "Perception/PawnSensingComponent.h"
 #include "FPSAIGuard.h"
+#include "FPSGameMode.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -34,6 +35,13 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 	{
 		return;
 	}
+
+	AFPSGameMode* MyGameMode = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+	if (MyGameMode)
+	{
+		MyGameMode->CompleteMission(SeenPawn, false);
+	}
+
 	DrawDebugLine(GetWorld(), GetActorLocation(), SeenPawn->GetActorLocation(), FColor::Red, false, 2, NULL, 5);
 }
 
