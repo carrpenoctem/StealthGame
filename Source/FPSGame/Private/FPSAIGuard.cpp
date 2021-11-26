@@ -17,6 +17,9 @@ AFPSAIGuard::AFPSAIGuard()
 	// Binding senses response
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnNoiseHeard);
+
+	// Setting default state
+	GuardState = EAIState::Idle;
 }
 
 // Called when the game starts or when spawned
@@ -42,12 +45,22 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 		MyGameMode->CompleteMission(SeenPawn, false);
 	}
 
+	// Setting alerted state
+	SetGuardState(EAIState::Alerted);
+	
 	DrawDebugLine(GetWorld(), GetActorLocation(), SeenPawn->GetActorLocation(), FColor::Red, false, 2, NULL, 5);
 }
 
 // Called when noise is heard
 void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
+	// Setting sus state if guard is not alerted already
+	if (GuardState == EAIState::Alerted)
+	{
+		return;
+	}
+	SetGuardState(EAIState::Suspicious);
+
 	DrawDebugLine(GetWorld(), GetActorLocation(), Location, FColor::Green, false, 2, NULL, 5);
 
 	// Using this instead FindLookAtRotation to avoid adding libraries
@@ -63,12 +76,32 @@ void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, 
 	// Return to initial rotation after a while
 	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
+
 }
 
 // Reset Rotation
 void AFPSAIGuard::ResetOrientation()
 {
+	// Setting idle state if guard is not alerted already
+	if (GuardState == EAIState::Alerted)
+	{
+		return;
+	}
+
 	SetActorRotation(InitialRotation);
+	SetGuardState(EAIState::Idle);
+}
+
+// Updating guard state
+void AFPSAIGuard::SetGuardState(EAIState NewState)
+{
+	if (GuardState == NewState) {
+		return;
+	}
+
+	GuardState = NewState;
+
+	OnGuardStateChanged(GuardState);
 }
 
 // Called every frame
