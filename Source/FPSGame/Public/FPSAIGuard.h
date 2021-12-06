@@ -7,6 +7,7 @@
 #include "FPSAIGuard.generated.h"
 
 class UPawnSensingComponent;
+class UBehaviorTree;
 
 UENUM(BlueprintType)
 enum class EAIState : uint8
@@ -60,9 +61,16 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnGuardStateChanged(EAIState NewState);
 
+	// Behavior tree setup
+	UPROPERTY(EditAnywhere, Category = "AI")
+	UBehaviorTree* BehaviorTree;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// For exposing outposts array
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TArray<AActor*> Outposts;
 
 };
