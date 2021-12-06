@@ -7,7 +7,7 @@
 #include "FPSAIGuard.generated.h"
 
 class UPawnSensingComponent;
-class UBehaviorTree;
+//class UBehaviorTree;
 
 UENUM(BlueprintType)
 enum class EAIState : uint8
@@ -61,9 +61,13 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnGuardStateChanged(EAIState NewState);
 
-	// Behavior tree setup
-	UPROPERTY(EditAnywhere, Category = "AI")
-	UBehaviorTree* BehaviorTree;
+	/*
+	* Moved to AI controller
+	*	// Behavior tree setup
+	*	UPROPERTY(EditAnywhere, Category = "AI")
+	*	UBehaviorTree* BehaviorTree;
+	* 
+	*/
 
 public:	
 	// Called every frame

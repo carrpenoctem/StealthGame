@@ -37,7 +37,7 @@ public:
 	UBehaviorTreeComponent* BehaviorTreeComponent;
 
 	// Actual BT
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
 private:
