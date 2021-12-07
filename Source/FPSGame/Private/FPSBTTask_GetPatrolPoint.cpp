@@ -32,7 +32,17 @@ EBTNodeResult::Type UFPSBTTask_GetPatrolPoint::ExecuteTask(UBehaviorTreeComponen
 	// If current outpost exists, pick another
 	if (CurrentOutpost)
 	{
-		newIndex = Outposts.Find(CurrentOutpost) + 1;
+		// in case Guard was interrupted, decide if go to next outpost or current one
+		if (CurrentOutpost->GetDistanceTo(MyPawn) <= 5.0f) 
+		{
+			newIndex = Outposts.Find(CurrentOutpost);
+		}
+		else
+		{
+			newIndex = Outposts.Find(CurrentOutpost) + 1;
+		}
+
+		// go to the first outpost if array length exceeded
 		if (newIndex >= Outposts.Num())
 		{
 			newIndex = 0;

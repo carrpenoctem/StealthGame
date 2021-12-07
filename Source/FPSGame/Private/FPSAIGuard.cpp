@@ -4,6 +4,7 @@
 #include "FPSAIGuard.h"
 #include "FPSGameMode.h"
 #include "DrawDebugHelpers.h"
+#include "FPSGuardController.h"
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -47,7 +48,8 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 
 	// Setting alerted state
 	SetGuardState(EAIState::Alerted);
-	
+	Cast<AFPSGuardController>(GetController())->SetAlerted(true);
+
 	DrawDebugLine(GetWorld(), GetActorLocation(), SeenPawn->GetActorLocation(), FColor::Red, false, 2, NULL, 5);
 }
 
@@ -77,6 +79,9 @@ void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, 
 	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
 
+	GetController()->StopMovement();
+	Cast<AFPSGuardController>(GetController())->SetAlerted(true);
+
 }
 
 // Reset Rotation
@@ -90,6 +95,7 @@ void AFPSAIGuard::ResetOrientation()
 
 	SetActorRotation(InitialRotation);
 	SetGuardState(EAIState::Idle);
+	Cast<AFPSGuardController>(GetController())->SetAlerted(false);
 }
 
 // Updating guard state

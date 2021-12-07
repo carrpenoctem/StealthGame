@@ -32,3 +32,7 @@ UBlackboardComponent* AFPSGuardController::Get_Blackboard() const
 	return Blackboard;
 }
 
+void AFPSGuardController::SetAlerted(bool on)
+{
+	GetBlackboardComponent()->SetValueAsBool(FName("IsAlerted"), on);
+}

@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
+	// Disabling movement
+	void SetAlerted(bool on);
+
 private:
 
 	// BB component for the getter
